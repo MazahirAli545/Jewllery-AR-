@@ -1,0 +1,22 @@
+{
+  "name": "virtual-glasses-try-on-main",
+  "version": "1.0.0",
+  "description": "Implementation of virtual glasses using Three.js + TensorFlow.js + Facemesh model.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.181.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "typescript": "^5.9.3"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}

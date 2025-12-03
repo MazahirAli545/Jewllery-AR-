@@ -1,0 +1,1140 @@
+/* Reasoning: Kept the original marketplace and AR styling, and extended it with
+   shop-page, product grid and AR control affordances to support the new multi-
+   vendor shop and product try-on flows without breaking existing layouts. */
+
+/* ---------- Global luxury theme shell ---------- */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+    -system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: radial-gradient(
+    circle at top left,
+    #1c1014 0,
+    #050308 40%,
+    #020008 100%
+  );
+  color: #f6f3f0;
+}
+
+body[data-lux-view="shop"] #hero,
+body[data-lux-view="shop"] #marketplace {
+  display: none !important;
+}
+
+.lux-header {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  background: rgba(5, 3, 8, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+}
+
+.lux-navbar {
+  padding: 0.75rem 1rem;
+}
+
+.lux-logo {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  color: #f5e5c3 !important;
+}
+
+.lux-navbar .nav-link {
+  color: #d8c7ff !important;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-left: 1.2rem;
+}
+
+.lux-navbar .nav-link:hover {
+  color: #ffd88b !important;
+}
+
+.lux-hero {
+  min-height: 90vh;
+  padding: 5rem 0 3rem;
+  background: radial-gradient(
+    circle at top left,
+    #3c1a24 0,
+    #050308 45%,
+    #020009 100%
+  );
+}
+
+.lux-hero-title {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-size: 2.75rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.lux-hero-highlight {
+  display: inline-block;
+  background: linear-gradient(120deg, #ffd88b, #fff0f4, #f6d3ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lux-hero-subtitle {
+  color: #e2d8f8;
+  max-width: 540px;
+  margin-bottom: 1.5rem;
+}
+
+.lux-hero-cta .lux-btn-primary {
+  background: linear-gradient(120deg, #b8860b, #ffd88b);
+  border: none;
+  color: #201215;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+}
+
+.lux-hero-cta .lux-btn-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.lux-hero-meta span {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-right: 1.4rem;
+  color: #b6a4e8;
+}
+
+.lux-hero-card {
+  background: radial-gradient(
+    circle at top,
+    #332032 0,
+    #130b11 65%,
+    #050308 100%
+  );
+  border-radius: 18px;
+  padding: 1.6rem 1.4rem;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+}
+
+.lux-hero-card-title {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.76rem;
+  color: #ffd88b;
+}
+
+.lux-hero-list {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.92rem;
+  color: #f3edf9;
+}
+
+.lux-section {
+  padding: 4rem 0;
+}
+
+.lux-container {
+  max-width: 1180px;
+}
+
+.lux-card {
+  border-radius: 18px;
+  background: radial-gradient(circle at top, #2a1b27 0, #050308 60%);
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
+}
+
+.lux-section-alt {
+  background: radial-gradient(
+    circle at top right,
+    #281420 0,
+    #050308 55%,
+    #020007 100%
+  );
+}
+
+.lux-section-title {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+}
+
+.lux-section-subtitle {
+  color: #d0c3ff;
+  max-width: 640px;
+}
+
+.lux-section-heading-center {
+  text-align: center;
+  margin-bottom: 2.3rem;
+}
+
+/* Home subsections & hero carousel */
+
+.lux-hero-carousel {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.lux-hero-slide {
+  min-height: 260px;
+  display: flex;
+  align-items: flex-end;
+  padding: 1.6rem 1.8rem;
+  color: #fef7ec;
+}
+
+.lux-hero-slide-necklace {
+  background: radial-gradient(
+    circle at top left,
+    #5a2930 0,
+    #cfa676 35%,
+    #150810 90%
+  );
+}
+
+.lux-hero-slide-earrings {
+  background: radial-gradient(
+    circle at top left,
+    #222b4c 0,
+    #8fa9ff 35%,
+    #080714 90%
+  );
+}
+
+.lux-hero-slide-mangalsutra {
+  background: radial-gradient(
+    circle at top left,
+    #3e2223 0,
+    #ffbfa4 35%,
+    #120709 90%
+  );
+}
+
+.lux-hero-slide-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+  opacity: 0.85;
+}
+
+.lux-hero-slide h3 {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-size: 1.35rem;
+  margin: 0.2rem 0;
+}
+
+.lux-home-subsections .lux-home-card {
+  padding: 1.6rem 1.5rem;
+}
+
+.lux-home-card-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.lux-home-card-subtitle {
+  font-size: 0.9rem;
+  color: #d0c3ff;
+  margin-bottom: 0.8rem;
+}
+
+.lux-home-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.lux-home-list li + li {
+  margin-top: 0.35rem;
+}
+
+.lux-home-category-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.lux-filter-chip {
+  background: transparent;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffe4a4;
+  padding: 0.35rem 1rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.lux-filter-chip:hover {
+  background: radial-gradient(circle at top left, #ffd88b, #b8860b);
+  color: #201215;
+}
+
+.lux-filter-pill-row {
+  gap: 0.75rem;
+}
+
+.lux-filter-pill {
+  background: transparent;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  color: #f2eaf9;
+  padding: 0.35rem 1rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.lux-filter-pill.active,
+.lux-filter-pill:hover {
+  background: radial-gradient(circle at top left, #ffd88b, #b8860b);
+  color: #23130e;
+}
+
+.lux-shop-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: #0c0608;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.lux-shop-banner {
+  height: 140px;
+  background-size: cover;
+  background-position: center;
+}
+
+.lux-shop-banner-1 {
+  background-image: linear-gradient(135deg, #4b2a2a, #c29b66);
+}
+.lux-shop-banner-2 {
+  background-image: linear-gradient(135deg, #2f374c, #9fa7ff);
+}
+.lux-shop-banner-3 {
+  background-image: linear-gradient(135deg, #2f2728, #f1b6a4);
+}
+
+.lux-shop-body {
+  padding: 1.25rem 1.3rem 1.4rem;
+}
+
+.lux-shop-name {
+  font-size: 1.05rem;
+  margin-bottom: 0.15rem;
+}
+
+.lux-shop-meta {
+  font-size: 0.82rem;
+  color: #bfa5ff;
+  margin-bottom: 0.7rem;
+}
+
+.lux-shop-copy {
+  font-size: 0.9rem;
+  color: #eee3ff;
+  margin-bottom: 1rem;
+}
+
+.lux-btn-ghost {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  background: transparent;
+  color: #ffe4a4;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.lux-btn-ghost:hover {
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.lux-tryon-shell {
+  padding-top: 3.5rem;
+}
+
+.lux-testimonial {
+  background: radial-gradient(circle at top, #2a1b27 0, #0c0609 65%);
+  border-radius: 18px;
+  padding: 1.5rem 1.4rem;
+  border: 1px solid rgba(255, 215, 0, 0.16);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.8);
+  height: 100%;
+}
+
+.lux-testimonial-text {
+  font-size: 0.94rem;
+  color: #f4ecff;
+}
+
+.lux-testimonial-author {
+  font-size: 0.86rem;
+  color: #ffd88b;
+  margin-top: 0.8rem;
+}
+
+.lux-dashboard-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.lux-dashboard-list li {
+  margin-bottom: 0.5rem;
+}
+
+.lux-footer {
+  border-top: 1px solid rgba(255, 215, 0, 0.16);
+  padding: 1.2rem 0;
+  background: #050308;
+  font-size: 0.82rem;
+  color: #bfb5e0;
+}
+
+/* Auth shell */
+
+.lux-auth-shell {
+  background: radial-gradient(
+      circle at top left,
+      rgba(255, 216, 139, 0.1),
+      transparent 55%
+    ),
+    radial-gradient(circle at bottom right, #1f1324 0, #050308 60%);
+}
+
+.lux-auth-card {
+  padding: 2.1rem 2rem 2rem;
+}
+
+.lux-auth-form .form-control {
+  background-color: rgba(7, 4, 10, 0.9);
+  border-color: rgba(255, 215, 0, 0.15);
+  color: #f5ecff;
+}
+
+.lux-auth-form .form-control:focus {
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 0 0.15rem rgba(255, 215, 0, 0.25);
+}
+
+.lux-auth-form .form-control.is-invalid {
+  border-color: #ff9b9b;
+}
+
+.lux-auth-form .invalid-feedback {
+  font-size: 0.78rem;
+}
+
+.lux-auth-link {
+  font-size: 0.85rem;
+  color: #ffd88b;
+}
+
+.lux-auth-link:hover {
+  color: #ffe9b8;
+  text-decoration: underline;
+}
+
+/* ---------- Shop Page & Product Grid ---------- */
+
+.lux-shop-header {
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  padding-bottom: 1.5rem;
+}
+
+.lux-shop-header-banner {
+  width: 260px;
+  min-width: 220px;
+  height: 150px;
+  border-radius: 18px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+}
+
+.lux-shop-header-body {
+  max-width: 540px;
+}
+
+.lux-shop-header-title {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-size: 1.8rem;
+  margin-bottom: 0.2rem;
+}
+
+.lux-shop-header-location {
+  font-size: 0.9rem;
+  color: #d0c3ff;
+}
+
+.lux-shop-header-rating span:first-child {
+  color: #ffd88b;
+  font-weight: 600;
+}
+
+.lux-shop-header-rating span:last-child {
+  font-size: 0.85rem;
+  color: #c9b5ff;
+}
+
+.lux-shop-header-copy {
+  margin-top: 0.6rem;
+  color: #eee3ff;
+}
+
+.lux-shop-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.lux-shop-meta-card {
+  background: radial-gradient(circle at top, #2a1b27 0, #0c0609 65%);
+  border-radius: 14px;
+  padding: 1rem 1rem;
+  border: 1px solid rgba(255, 215, 0, 0.16);
+  font-size: 0.85rem;
+  color: #e9defe;
+}
+
+.lux-shop-meta-card h3 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #ffd88b;
+  margin-bottom: 0.35rem;
+}
+
+.lux-shop-grid-controls {
+  font-size: 0.9rem;
+  padding: 0.9rem 1.1rem 1rem;
+  background: radial-gradient(
+    circle at top,
+    rgba(45, 26, 40, 0.96),
+    rgba(5, 3, 8, 0.96)
+  );
+  border-radius: 14px;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+}
+
+.lux-shop-controls-summary strong {
+  color: #ffd88b;
+  margin: 0 0.25rem;
+}
+
+.lux-shop-controls-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #c2b4f7;
+}
+
+.lux-shop-controls-sort label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #c2b4f7;
+}
+
+.lux-select-wrapper {
+  position: relative;
+  min-width: 180px;
+}
+
+.lux-select {
+  width: 100%;
+  background-color: rgba(10, 6, 16, 0.9);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  padding: 0.35rem 2rem 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  color: #f4ecff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.lux-select:focus {
+  outline: none;
+  border-color: rgba(255, 215, 0, 0.65);
+  box-shadow: 0 0 0 0.08rem rgba(255, 215, 0, 0.45);
+}
+
+.lux-select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-right: 2px solid #ffd88b;
+  border-bottom: 2px solid #ffd88b;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.lux-shop-products-grid {
+  margin-top: 0.5rem;
+}
+
+.lux-product-card {
+  background: #09040a;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.9);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.lux-product-thumb-wrapper {
+  position: relative;
+  padding-top: 72%;
+  background: radial-gradient(circle at top, #342131, #09040a);
+}
+
+.lux-product-thumb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+}
+
+.lux-product-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.lux-product-badge {
+  font-size: 0.68rem;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  color: #ffd88b;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.lux-product-body {
+  padding: 0.85rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.lux-product-title {
+  font-size: 0.98rem;
+  margin-bottom: 0.2rem;
+}
+
+.lux-product-short {
+  font-size: 0.86rem;
+  color: #d9cff8;
+  margin-bottom: 0.5rem;
+}
+
+.lux-product-meta {
+  font-size: 0.86rem;
+}
+
+.lux-product-price {
+  font-weight: 600;
+  color: #ffd88b;
+}
+
+.lux-product-stock {
+  font-size: 0.8rem;
+}
+
+.lux-product-stock.in-stock {
+  color: #9bf29b;
+}
+
+.lux-product-stock.low-stock {
+  color: #ffd88b;
+}
+
+.lux-product-stock.sold-out {
+  color: #ff9b9b;
+}
+
+.lux-shop-pagination {
+  font-size: 0.86rem;
+}
+
+.lux-shop-page-indicator {
+  margin: 0 0.75rem;
+}
+
+/* ---------- Product Modal ---------- */
+
+.lux-product-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1200;
+}
+
+.lux-product-modal.d-none {
+  display: none;
+}
+
+.lux-product-modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.lux-product-modal-dialog {
+  position: relative;
+  max-width: 960px;
+  margin: 4rem auto;
+  background: radial-gradient(circle at top, #2a1b27 0, #050308 65%);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 215, 0, 0.28);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.9);
+  padding: 1.5rem 1.8rem;
+}
+
+.lux-product-modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.9rem;
+  background: transparent;
+  border: 0;
+  color: #ffd88b;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.lux-product-modal-content {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.lux-product-modal-gallery {
+  flex: 1 1 40%;
+  padding-right: 1.1rem;
+  border-right: 1px solid rgba(255, 215, 0, 0.12);
+}
+
+.lux-product-modal-body {
+  flex: 1 1 50%;
+  padding-left: 1.1rem;
+}
+
+.lux-product-modal-main img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.8);
+}
+
+.lux-product-modal-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+  gap: 0.4rem;
+}
+
+.lux-product-thumb-btn {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.lux-product-thumb-btn img {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 215, 0, 0.38);
+}
+
+.lux-product-modal-title {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-size: 1.4rem;
+  margin-bottom: 0.3rem;
+}
+
+.lux-product-modal-sku,
+.lux-product-modal-shop {
+  font-size: 0.82rem;
+  color: #d0c3ff;
+}
+
+.lux-product-modal-price {
+  font-size: 1.1rem;
+  margin: 0.85rem 0;
+  color: #ffd88b;
+}
+
+.lux-product-variants label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #c9b5ff;
+}
+
+.lux-product-attributes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 1rem;
+  margin-top: 0.9rem;
+  font-size: 0.82rem;
+}
+
+.lux-product-attributes div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.lux-product-attributes strong {
+  color: #f4ecff;
+}
+
+.lux-product-ctas {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+body.lux-modal-open {
+  overflow: hidden;
+}
+
+@media screen and (max-width: 768px) {
+  .lux-product-modal-dialog {
+    margin: 2.5rem auto;
+    padding: 1.1rem 1.2rem;
+  }
+  .lux-product-modal-content {
+    flex-direction: column;
+  }
+  .lux-product-modal-gallery {
+    border-right: 0;
+    padding-right: 0;
+    margin-bottom: 1rem;
+  }
+  .lux-product-modal-body {
+    padding-left: 0;
+  }
+}
+
+/* ---------- Existing AR app styles (kept) ---------- */
+
+#virtual-glasses-app {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  min-height: 80vh;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 215, 0, 0.18);
+}
+
+#image-container {
+  position: relative;
+  margin-top: -10px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  text-align: center;
+}
+
+#button-control {
+  position: relative;
+  bottom: 200px;
+  left: 0;
+  right: 0;
+  height: 65px;
+  margin: auto;
+  background: transparent;
+  border: 0;
+  width: 320px;
+  z-index: 99999;
+}
+
+.form-control.webcam-start {
+  top: 68% !important;
+  width: 200px;
+}
+
+.form-control.webcam-on {
+  top: 15% !important;
+}
+
+#canvas {
+  width: 640px;
+  height: 480px;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  z-index: 888 !important;
+}
+
+.loading {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 300000;
+  border: white 1px;
+  color: white;
+  padding: 75px 26px;
+  font-size: 22px;
+  margin: auto;
+  width: 200px;
+  height: 200px;
+}
+
+.spinner-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 200px;
+  color: white;
+  z-index: 300000;
+  filter: alpha(opacity=80);
+  -moz-opacity: 0.8;
+  opacity: 0.8;
+}
+
+.dot {
+  height: 10px;
+  width: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  z-index: 999999;
+}
+
+#arrowLeft {
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  z-index: 999999;
+  opacity: 0.7;
+  cursor: pointer;
+  margin: auto;
+}
+
+#arrowRight {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  bottom: 0;
+  z-index: 999999;
+  opacity: 0.7;
+  cursor: pointer;
+  margin: auto;
+}
+
+#jewelry-slider {
+  width: 100%;
+  height: 125px;
+  margin: auto;
+  position: absolute;
+  bottom: 0px;
+  background: radial-gradient(circle at top, rgba(34, 20, 32, 0.96), #050308);
+  border-top: 1px solid rgba(255, 215, 0, 0.25);
+  box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.8);
+  left: 0;
+  right: 0;
+  z-index: 998;
+}
+
+#jewelry-list {
+  position: relative;
+  width: 85%;
+  height: 125px;
+  margin: auto;
+  overflow: hidden;
+}
+
+#jewelry-slider ul {
+  list-style: none;
+  width: 10000px;
+  height: 125px;
+  padding-left: 10px;
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+#jewelry-slider ul li {
+  width: 100px;
+  height: 100px;
+  line-height: 80px;
+  background: #1a1013;
+  float: left;
+  margin: 5px 15px;
+  vertical-align: middle;
+  text-align: center;
+  cursor: pointer;
+}
+
+#jewelry-slider ul li img {
+  width: 85px;
+  margin: auto;
+}
+
+.glasses {
+  border: 0px;
+}
+
+.selected-accessory {
+  border: 3px solid #ffd88b;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+.full-glasses {
+  height: 85px !important;
+  width: auto !important;
+}
+@media screen and (max-width: 480px) {
+  #jewelry-slider {
+    width: 100%;
+    bottom: auto;
+    top: 500px;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .loading {
+    padding: 55px 0px;
+    font-size: medium;
+    width: 150px;
+  }
+  .spinner-border {
+    width: 150px;
+    height: 150px;
+  }
+
+  #jewelry-list {
+    width: 80%;
+  }
+  #jewelry-list ul {
+    padding-left: 0;
+    margin-top: 25px;
+  }
+  #jewelry-list ul li {
+    width: 75px;
+    height: 75px;
+    line-height: 60px;
+    margin: 5px 8px;
+  }
+  #jewelry-list ul li img {
+    width: 65px;
+  }
+
+  .full-glasses {
+    height: 65px !important;
+    width: auto !important;
+    margin-left: 3px !important;
+  }
+
+  #glasses-btn {
+    font-size: 28px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  #face-glasses-app {
+    height: 100vh;
+  }
+  #arrowLeft {
+    height: 43px;
+  }
+  #arrowRight {
+    height: 43px;
+  }
+}
+
+@media screen and (min-width: 450px) and (max-width: 767px) {
+  .form-control.webcam-start {
+    top: 0 !important;
+  }
+
+  #jewelry-list {
+    width: 86%;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .form-control.webcam-start {
+    top: 5% !important;
+  }
+  .form-control.webcam-on {
+    top: 15% !important;
+  }
+  #button-control {
+    bottom: 350px;
+  }
+}
+
+.md-modal {
+  margin: 0 !important;
+}
+
+#webcam-container #jewelry-slider {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  margin: 0 0 0 auto;
+}
+
+#webcam {
+  z-index: 1 !important;
+  width: 640px;
+  height: 480px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* ---------- AR Controls in Modal ---------- */
+
+.lux-ar-controls {
+  font-size: 0.78rem;
+  border-top: 1px solid rgba(255, 215, 0, 0.18);
+  padding-top: 0.6rem;
+  background: radial-gradient(circle at top, rgba(34, 20, 32, 0.95), #050308);
+}
+
+.lux-ar-slider-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #d0c3ff;
+}

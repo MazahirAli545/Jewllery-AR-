@@ -1,0 +1,884 @@
+<!-- Reasoning: Extended the landing page into a lightweight SPA shell with dedicated shop and product
+     routes, added AR controls for better UX and accessibility, and prepared for lazy-loaded ML scripts
+     while preserving the existing try-on studio behaviour for backwards compatibility. -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>LuxAura – Virtual Jewellery Try-On Marketplace</title>
+    <meta
+      name="description"
+      content="LuxAura is a luxury jewellery marketplace with live AR try-on for necklaces, earrings, maang-tikkas, rings and more. Discover curated designs from top jewellers and try them on instantly."
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OpenGraph -->
+    <meta
+      property="og:title"
+      content="LuxAura – Virtual Jewellery Try-On Marketplace"
+    />
+    <meta
+      property="og:description"
+      content="Try premium necklaces, earrings, maang-tikkas and rings in real time with AR, and shop from multiple branded jewellery stores."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://example.com" />
+    <meta property="og:image" content="images/arrow-right.png" />
+
+    <!-- Basic Schema.org markup for a Jewellery Store marketplace -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "LuxAura Jewellery Try-On",
+        "url": "https://example.com",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://example.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <!-- Core UI styles -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="https://unpkg.com/webcam-easy/demo/style/webcam-demo.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="style/virtual-glasses.css"
+    />
+
+    <!-- Core dependencies (kept light; heavy ML scripts are lazy-loaded from the AR flow) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" defer></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"
+      defer
+    ></script>
+    <script type="text/javascript" src="js/webcam-ui-lib.js" defer></script>
+  </head>
+  <body>
+    <!-- Global shell: landing, marketplace, dashboards -->
+    <header class="lux-header">
+      <nav class="navbar navbar-expand-lg navbar-dark lux-navbar">
+        <a class="navbar-brand lux-logo" href="#hero">LuxAura</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#luxNavbar"
+          aria-controls="luxNavbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="luxNavbar">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#hero" data-lux-view="home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#marketplace" data-lux-view="home">
+                Shops
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/tryon" data-lux-view="tryon">
+                Try-On Studio
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#testimonials">Stories</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login" data-lux-view="login">
+                My Account
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Hero / Landing -->
+    <section id="hero" class="lux-hero d-flex align-items-center">
+      <div class="container lux-container">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h1 class="lux-hero-title">
+              Try Premium Jewellery
+              <span class="lux-hero-highlight">Live in AR</span>
+            </h1>
+            <p class="lux-hero-subtitle">
+              Necklaces, earrings, maang-tikkas, rings and more – from India’s
+              favourite jewellers. See how they sit on your face and neck before
+              you buy.
+            </p>
+            <div class="lux-hero-cta">
+              <a
+                href="/tryon"
+                data-lux-view="tryon"
+                class="btn btn-lg lux-btn-primary mr-3"
+              >
+                Launch Try-On Studio
+              </a>
+              <a
+                href="#marketplace"
+                data-lux-view="home"
+                class="btn btn-outline-light btn-lg"
+              >
+                Browse Jewellery Marketplace
+              </a>
+            </div>
+            <div class="lux-hero-meta">
+              <span>Real-time face landmarks</span>
+              <span>Multi-vendor catalogue</span>
+              <span>HD product zoom</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div
+              id="luxHeroCarousel"
+              class="carousel slide lux-hero-carousel"
+              data-ride="carousel"
+            >
+              <ol class="carousel-indicators">
+                <li
+                  data-target="#luxHeroCarousel"
+                  data-slide-to="0"
+                  class="active"
+                ></li>
+                <li data-target="#luxHeroCarousel" data-slide-to="1"></li>
+                <li data-target="#luxHeroCarousel" data-slide-to="2"></li>
+              </ol>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <div class="lux-hero-slide lux-hero-slide-necklace">
+                    <div class="lux-hero-slide-content">
+                      <p class="lux-hero-slide-kicker">Bridal Necklaces</p>
+                      <h3>Temple Polki &amp; Emerald Sets</h3>
+                      <p>Curated for sangeet, wedding and reception looks.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <div class="lux-hero-slide lux-hero-slide-earrings">
+                    <div class="lux-hero-slide-content">
+                      <p class="lux-hero-slide-kicker">Fine Earrings</p>
+                      <h3>Diamond &amp; Emerald Halos</h3>
+                      <p>Everyday luxury from Zoya Signature and more.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <div class="lux-hero-slide lux-hero-slide-mangalsutra">
+                    <div class="lux-hero-slide-content">
+                      <p class="lux-hero-slide-kicker">Modern Mangalsutras</p>
+                      <h3>Rose Gold Bars &amp; Minimal Chains</h3>
+                      <p>Designed for work days, brunches and beyond.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <a
+                class="carousel-control-prev"
+                href="#luxHeroCarousel"
+                role="button"
+                data-slide="prev"
+              >
+                <span class="carousel-control-prev-icon" aria-hidden="true">
+                </span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a
+                class="carousel-control-next"
+                href="#luxHeroCarousel"
+                role="button"
+                data-slide="next"
+              >
+                <span class="carousel-control-next-icon" aria-hidden="true">
+                </span>
+                <span class="sr-only">Next</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marketplace snapshot (stubbed data, ready for real API) -->
+    <section id="marketplace" class="lux-section lux-section-alt">
+      <div class="container lux-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="lux-section-title">Curated Jewellery Shops</h2>
+            <p class="lux-section-subtitle">
+              Multi-vendor marketplace – each brand with its own storefront,
+              AR-enabled catalogue and verified reviews.
+            </p>
+          </div>
+          <div class="lux-filter-pill-row d-none d-md-flex">
+            <button class="lux-filter-pill active">All</button>
+            <button class="lux-filter-pill">Necklaces</button>
+            <button class="lux-filter-pill">Earrings</button>
+            <button class="lux-filter-pill">Rings</button>
+          </div>
+        </div>
+
+        <div class="row lux-shop-grid">
+          <article
+            class="col-md-4 mb-4"
+            data-categories="necklaces, earrings, bridal"
+          >
+            <div class="lux-shop-card">
+              <div class="lux-shop-banner lux-shop-banner-1"></div>
+              <div class="lux-shop-body">
+                <h3 class="lux-shop-name">Malabar Heritage Studio</h3>
+                <p class="lux-shop-meta">68 designs • Avg. rating 4.9</p>
+                <p class="lux-shop-copy">
+                  Temple-inspired gold, Kundan and Polki sets crafted for
+                  weddings and heirloom collections.
+                </p>
+                <button
+                  class="lux-btn-ghost w-100"
+                  type="button"
+                  data-shop-name="Malabar Heritage Studio"
+                >
+                  View shop &amp; AR-ready pieces
+                </button>
+              </div>
+            </div>
+          </article>
+          <article
+            class="col-md-4 mb-4"
+            data-categories="earrings, rings, bracelets"
+          >
+            <div class="lux-shop-card">
+              <div class="lux-shop-banner lux-shop-banner-2"></div>
+              <div class="lux-shop-body">
+                <h3 class="lux-shop-name">Zoya Signature Fine Jewellery</h3>
+                <p class="lux-shop-meta">42 designs • Avg. rating 4.8</p>
+                <p class="lux-shop-copy">
+                  Diamond solitaires, halo studs and bracelets with minimalist
+                  European finishes.
+                </p>
+                <button
+                  class="lux-btn-ghost w-100"
+                  type="button"
+                  data-shop-name="Zoya Signature Fine Jewellery"
+                >
+                  Enter shop &amp; start try-on
+                </button>
+              </div>
+            </div>
+          </article>
+          <article
+            class="col-md-4 mb-4"
+            data-categories="mangalsutra, nose pins, rings"
+          >
+            <div class="lux-shop-card">
+              <div class="lux-shop-banner lux-shop-banner-3"></div>
+              <div class="lux-shop-body">
+                <h3 class="lux-shop-name">Aara Gold Boutique</h3>
+                <p class="lux-shop-meta">30 designs • Avg. rating 4.7</p>
+                <p class="lux-shop-copy">
+                  Everyday mangalsutras, stackable rings and nose pins with
+                  contemporary silhouettes.
+                </p>
+                <button
+                  class="lux-btn-ghost w-100"
+                  type="button"
+                  data-shop-name="Aara Gold Boutique"
+                >
+                  Explore designs &amp; save try-ons
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="lux-home-subsections row mt-5">
+          <div class="col-md-6 mb-4">
+            <div class="lux-card lux-home-card">
+              <h3 class="lux-home-card-title">Trending Jewellery</h3>
+              <p class="lux-home-card-subtitle">
+                Pieces most brides and stylists are shortlisting this week.
+              </p>
+              <ul class="lux-home-list">
+                <li>Heritage Polki Emerald Necklace Set • Malabar Heritage</li>
+                <li>Emerald Halo Stud Earrings • Zoya Signature</li>
+                <li>Rose Gold Bar Mangalsutra • Aara Gold Boutique</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="lux-card lux-home-card">
+              <h3 class="lux-home-card-title">Festival &amp; Wedding Offers</h3>
+              <p class="lux-home-card-subtitle">
+                Limited-period making charge waivers and upgrade programmes.
+              </p>
+              <ul class="lux-home-list">
+                <li>Up to 25% off on making charges for bridal sets</li>
+                <li>Exchange old gold for new AR-ready designs</li>
+                <li>Complimentary styling consult on select orders</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="lux-home-subsections row">
+          <div class="col-md-12">
+            <div class="lux-card lux-home-card lux-home-categories">
+              <h3 class="lux-home-card-title">Shop by Category</h3>
+              <div class="lux-home-category-chips">
+                <button type="button" class="lux-filter-chip">Necklaces</button>
+                <button type="button" class="lux-filter-chip">Earrings</button>
+                <button type="button" class="lux-filter-chip">Rings</button>
+                <button type="button" class="lux-filter-chip">
+                  Mangalsutras
+                </button>
+                <button type="button" class="lux-filter-chip">
+                  Maang Tikkas
+                </button>
+                <button type="button" class="lux-filter-chip">
+                  Bridal Sets
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dedicated Shop Page (SPA-style; populated from shop/product data and API stubs) -->
+    <section
+      id="shop-page"
+      class="lux-section lux-section-alt d-none"
+      aria-live="polite"
+    >
+      <div class="container lux-container" id="shop-page-root">
+        <!-- Populated dynamically by js/shops-ui.js based on route /shops/:shopId -->
+      </div>
+    </section>
+
+    <!-- AR Try-On Studio (existing implementation wrapped as a section) -->
+    <section id="tryon" class="lux-section lux-tryon-shell d-none">
+      <div class="container-fluid p-0 lux-tryon-container">
+        <div class="lux-section-heading-center">
+          <h2 class="lux-section-title">Live AR Try-On Studio</h2>
+          <p class="lux-section-subtitle">
+            Use your camera or a photo upload to preview jewellery on your face
+            and neck. This demo focuses on necklaces and forehead accessories;
+            hooks for earrings, rings and nose pins are ready in the codebase.
+          </p>
+        </div>
+
+        <main id="virtual-glasses-app">
+          <div class="form-control webcam-start" id="webcam-control">
+            <label class="form-switch">
+              <input type="checkbox" id="webcam-switch" />
+              <i></i>
+              <span id="webcam-caption">Try it On</span>
+            </label>
+            <button id="cameraFlip" class="btn d-none"></button>
+          </div>
+          <div id="image-container">
+            <canvas id="canvas" width="640" height="480"></canvas>
+            <div class="loading d-none">
+              Loading Model
+              <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+
+            <div id="jewelry-slider">
+              <img id="arrowLeft" src="images/arrow-left.png" />
+              <div id="jewelry-list">
+                <ul>
+                  <li class="selected-accessory">
+                    <img
+                      src="3dmodel/necklace/18966323.jpg"
+                      data-accessory-type="necklace"
+                      data-3d-type="image"
+                      data-image-src="3dmodel/necklace/18966323.jpg"
+                      data-offset-y="35"
+                      data-scale="0.8"
+                    />
+                  </li>
+                  <li>
+                    <img
+                      src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='80'><rect width='120' height='80' fill='%23fff0f4'/><text x='50%25' y='55%25' font-size='14' fill='%23b03060' text-anchor='middle'>Maang Tikka</text></svg>"
+                      data-accessory-type="forehead"
+                      data-3d-type="gltf"
+                      data-3d-src="3dmodel/jewelry-maang-01/scene.gltf"
+                      data-offset-y="-15"
+                      data-scale="0.9"
+                    />
+                  </li>
+                  <li>
+                    <img
+                      src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='80'><rect width='120' height='80' fill='%23ffeef2'/><text x='50%25' y='55%25' font-size='14' fill='%23b03060' text-anchor='middle'>Ruby Choker</text></svg>"
+                      data-accessory-type="necklace"
+                      data-3d-type="procedural"
+                      data-geometry="choker"
+                      data-color="#b03060"
+                      data-offset-y="25"
+                      data-scale="0.03"
+                    />
+                  </li>
+                  <li>
+                    <img
+                      src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='80'><rect width='120' height='80' fill='%23e8f6ff'/><text x='50%25' y='55%25' font-size='14' fill='%2300677a' text-anchor='middle'>Emerald Jhumka</text></svg>"
+                      data-accessory-type="forehead"
+                      data-3d-type="procedural"
+                      data-geometry="pendant"
+                      data-color="#0f7a6c"
+                      data-offset-y="-12"
+                      data-scale="0.012"
+                    />
+                  </li>
+                  <li>
+                    <img
+                      src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='80'><rect width='120' height='80' fill='%23fff0df'/><text x='50%25' y='55%25' font-size='14' fill='%23b87333' text-anchor='middle'>Copper Maang</text></svg>"
+                      data-accessory-type="forehead"
+                      data-3d-type="procedural"
+                      data-geometry="drop"
+                      data-color="#b87333"
+                      data-offset-y="-8"
+                      data-scale="0.013"
+                    />
+                  </li>
+                </ul>
+              </div>
+              <img id="arrowRight" src="images/arrow-right.png" />
+            </div>
+          </div>
+
+          <div
+            id="errorMsg"
+            class="col-12 col-md-6 alert-danger d-none"
+            role="alert"
+            aria-live="assertive"
+          >
+            Fail to start camera, please allow permision to access camera.
+            <br />
+            If you are browsing through social media built in browsers, you
+            would need to open the page in Sarafi (iPhone)/ Chrome (Android)
+            <button id="closeError" class="btn btn-primary ml-3">OK</button>
+          </div>
+          <div class="md-modal md-effect-12" aria-modal="true" role="dialog">
+            <div id="app-panel" class="app-panel md-content row p-0 m-0">
+              <div
+                id="webcam-container"
+                class="webcam-container col-12 d-none p-0 m-0"
+              >
+                <video
+                  id="webcam"
+                  autoplay
+                  playsinline
+                  width="640"
+                  height="480"
+                  aria-label="Live camera preview for AR jewellery try-on"
+                ></video>
+              </div>
+              <!-- AR try-on experience controls for accessibility and UX -->
+              <div
+                class="lux-ar-controls w-100 d-flex flex-wrap justify-content-center align-items-center px-3 pb-3"
+              >
+                <div
+                  class="btn-group mr-2 mb-2"
+                  role="group"
+                  aria-label="AR input source"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-sm lux-btn-ghost"
+                    id="lux-ar-source-camera"
+                  >
+                    Camera
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm lux-btn-ghost"
+                    id="lux-ar-source-upload"
+                  >
+                    Upload Photo
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-sm lux-btn-ghost mr-2 mb-2"
+                  id="lux-ar-flip-camera"
+                >
+                  Flip Camera
+                </button>
+                <div class="d-flex align-items-center mb-2 mr-3">
+                  <label
+                    for="lux-ar-brightness"
+                    class="mr-2 mb-0 lux-ar-slider-label"
+                  >
+                    Brightness
+                  </label>
+                  <input
+                    type="range"
+                    id="lux-ar-brightness"
+                    min="0.6"
+                    max="1.4"
+                    step="0.05"
+                    value="1"
+                    aria-label="Adjust AR preview brightness"
+                  />
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-sm lux-btn-primary mb-2"
+                  id="lux-ar-save-snapshot"
+                >
+                  Save Snapshot
+                </button>
+                <input
+                  type="file"
+                  id="lux-ar-upload-input"
+                  accept="image/*"
+                  class="d-none"
+                  aria-hidden="true"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="md-overlay"></div>
+        </main>
+      </div>
+    </section>
+
+    <!-- Auth: Login -->
+    <section
+      id="auth-login"
+      class="lux-section lux-auth-shell d-none"
+      aria-live="polite"
+    >
+      <div class="container lux-container">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="lux-card lux-auth-card">
+              <h2 class="lux-section-title mb-3">Welcome back</h2>
+              <p class="lux-section-subtitle mb-4">
+                Sign in to view your saved try-ons, wishlists and orders.
+              </p>
+              <form class="lux-auth-form" novalidate>
+                <div class="form-group">
+                  <label for="loginEmail">Email</label>
+                  <input
+                    type="email"
+                    id="loginEmail"
+                    class="form-control"
+                    required
+                  />
+                  <small class="invalid-feedback">
+                    Please enter a valid email address.
+                  </small>
+                </div>
+                <div class="form-group">
+                  <label for="loginPassword">Password</label>
+                  <input
+                    type="password"
+                    id="loginPassword"
+                    class="form-control"
+                    minlength="6"
+                    required
+                  />
+                  <small class="invalid-feedback">
+                    Password must be at least 6 characters.
+                  </small>
+                </div>
+                <div
+                  class="d-flex justify-content-between align-items-center mb-3"
+                >
+                  <a href="#" class="lux-auth-link">Forgot password?</a>
+                  <a
+                    href="/register"
+                    data-lux-view="register"
+                    class="lux-auth-link"
+                  >
+                    New to LuxAura? Create account
+                  </a>
+                </div>
+                <button type="submit" class="btn btn-block lux-btn-primary">
+                  Sign in securely
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-block lux-btn-ghost mt-3"
+                  data-lux-guest-login
+                >
+                  Continue as guest
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Auth: Register -->
+    <section
+      id="auth-register"
+      class="lux-section lux-auth-shell d-none"
+      aria-live="polite"
+    >
+      <div class="container lux-container">
+        <div class="row justify-content-center">
+          <div class="col-md-7">
+            <div class="lux-card lux-auth-card">
+              <h2 class="lux-section-title mb-3">Create your LuxAura ID</h2>
+              <p class="lux-section-subtitle mb-4">
+                Save try-ons, sync wishlists across devices and receive curated
+                drops from your favourite jewellers.
+              </p>
+              <form class="lux-auth-form" novalidate>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="registerName">Full name</label>
+                    <input
+                      type="text"
+                      id="registerName"
+                      class="form-control"
+                      required
+                    />
+                    <small class="invalid-feedback">
+                      Please enter your name.
+                    </small>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="registerMobile">Mobile number</label>
+                    <input
+                      type="tel"
+                      id="registerMobile"
+                      class="form-control"
+                      pattern="[0-9]{10}"
+                      required
+                    />
+                    <small class="invalid-feedback">
+                      Enter a valid 10-digit mobile number.
+                    </small>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="registerEmail">Email</label>
+                  <input
+                    type="email"
+                    id="registerEmail"
+                    class="form-control"
+                    required
+                  />
+                  <small class="invalid-feedback">
+                    Please enter a valid email address.
+                  </small>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="registerPassword">Password</label>
+                    <input
+                      type="password"
+                      id="registerPassword"
+                      class="form-control"
+                      minlength="6"
+                      required
+                    />
+                    <small class="invalid-feedback">
+                      Minimum 6 characters with a mix of letters and numbers.
+                    </small>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="registerOtp">One-time OTP</label>
+                    <input
+                      type="text"
+                      id="registerOtp"
+                      class="form-control"
+                      pattern="[0-9]{4,6}"
+                    />
+                    <small class="invalid-feedback">
+                      Please enter the 4–6 digit OTP sent to your mobile.
+                    </small>
+                    <small class="form-text text-muted">
+                      For this demo, OTP is optional and not validated against a
+                      backend.
+                    </small>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="registerTerms"
+                      required
+                    />
+                    <label class="form-check-label" for="registerTerms">
+                      I agree to LuxAura’s terms &amp; privacy policy.
+                    </label>
+                  </div>
+                  <small class="invalid-feedback d-block">
+                    Please accept the terms to continue.
+                  </small>
+                </div>
+                <button type="submit" class="btn btn-block lux-btn-primary">
+                  Create account
+                </button>
+                <p class="mt-3 mb-0">
+                  Already have an account?
+                  <a href="/login" data-lux-view="login" class="lux-auth-link">
+                    Sign in instead
+                  </a>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials / Social proof -->
+    <section id="testimonials" class="lux-section">
+      <div class="container lux-container">
+        <div class="lux-section-heading-center">
+          <h2 class="lux-section-title">Loved by brides &amp; stylists</h2>
+          <p class="lux-section-subtitle">
+            Early users are already styling full wedding looks with AR before
+            they step into a store.
+          </p>
+        </div>
+        <div class="row">
+          <div class="col-md-4 mb-4">
+            <div class="lux-testimonial">
+              <p class="lux-testimonial-text">
+                “Being able to try different necklaces with my lehenga at home
+                saved us three store visits. The AR was surprisingly accurate.”
+              </p>
+              <p class="lux-testimonial-author">— Ananya, Bride</p>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="lux-testimonial">
+              <p class="lux-testimonial-text">
+                “The marketplace concept is strong – I can compare designs from
+                different brands and short-list my favourites with clients.”
+              </p>
+              <p class="lux-testimonial-author">— Rhea, Stylist</p>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="lux-testimonial">
+              <p class="lux-testimonial-text">
+                “As a jeweller, seeing which pieces are tried-on the most is
+                gold. The admin analytics stub is exactly what we need to
+                scale.”
+              </p>
+              <p class="lux-testimonial-author">— Vikram, Store Owner</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- User / Admin dashboard stubs -->
+    <section id="dashboard" class="lux-section lux-section-alt">
+      <div class="container lux-container">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <h2 class="lux-section-title">User Dashboard (Preview)</h2>
+            <ul class="lux-dashboard-list">
+              <li>
+                <strong>Saved try-ons</strong> – store screenshots or
+                configurations for later.
+              </li>
+              <li><strong>Wishlist</strong> – bookmark pieces across shops.</li>
+              <li>
+                <strong>Orders</strong> – track status once checkout is wired to
+                backend.
+              </li>
+              <li>
+                <strong>Subscriptions</strong> – follow favourite shops for
+                drops.
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6 mb-4">
+            <h2 class="lux-section-title">Admin Panel (Preview)</h2>
+            <ul class="lux-dashboard-list">
+              <li>
+                <strong>Manage shops</strong> – onboard vendors, branding and
+                banners.
+              </li>
+              <li>
+                <strong>Approve products</strong> – review AR-ready assets and
+                listings.
+              </li>
+              <li>
+                <strong>Try-on analytics</strong> – track which SKUs and
+                categories are tried most.
+              </li>
+              <li>
+                <strong>Performance</strong> – monitor conversion funnels from
+                try-on to wishlists.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="lux-footer">
+      <div
+        class="container d-flex flex-column flex-md-row justify-content-between"
+      >
+        <p class="mb-2 mb-md-0">
+          © <span id="luxYear"></span> LuxAura Jewellery Try-On. All rights
+          reserved.
+        </p>
+        <p class="mb-0">
+          Designed for multi-vendor AR jewellery commerce. Demo build – plug
+          into your own backend.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Three.js import map + AR module -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./node_modules/three/build/three.module.js",
+          "three/examples/jsm/controls/OrbitControls.js": "./node_modules/three/examples/jsm/controls/OrbitControls.js",
+          "three/examples/jsm/loaders/GLTFLoader.js": "./node_modules/three/examples/jsm/loaders/GLTFLoader.js"
+        }
+      }
+    </script>
+    <script>
+      // Simple non-breaking enhancement: update year in footer
+      (function () {
+        var el = document.getElementById("luxYear");
+        if (el) {
+          el.textContent = new Date().getFullYear();
+        }
+      })();
+    </script>
+    <script src="js/lux-ui.js" defer></script>
+    <!-- Shop data + API mocks + SPA routing for /shops/:shopId and products -->
+    <script src="js/shops-data.js" defer></script>
+    <script src="js/shops-api.js" defer></script>
+    <script src="js/shops-ui.js" defer></script>
+    <script type="module" src="js/virtual-glasses.js"></script>
+  </body>
+</html>
