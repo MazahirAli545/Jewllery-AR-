@@ -244,7 +244,14 @@
         ratingCount: 45,
         createdAt: "2024-11-10T00:00:00.000Z",
         thumbnail: "3dmodel/glasses-02/glasses_02.png",
-        gallery: ["3dmodel/glasses-02/glasses_02.png"],
+        gallery: [
+          // Primary catalogue image
+          "3dmodel/glasses-02/glasses_02.png",
+          // Alternate studio-style angle (re-using another AR-ready PNG for variety)
+          "3dmodel/glasses-03/glasses_03.png",
+          // Close-up style shot
+          "3dmodel/glasses-04/glasses_04.png",
+        ],
         "3dType": "image",
         assetUrl: "3dmodel/glasses-02/glasses_02.png",
         anchorConfig: {
